@@ -1,6 +1,16 @@
 # ansible-prometheus-k8s
 k8s 部署 prometheus ansible 脚本
-
+使用次脚本的前提是您已经部署好 k8s 环境和 ingress，并且可访问外网，如不可访问外网可以提前下载好 image，并修改inventories/group_vars/prometheus.yml 中的repo 本地化安装
+ 镜像名称：
+ 
+ ```
+ xuejipeng/tiny-tools:latest         
+ xuejipeng/kube-state-metrics:v1.2.0           
+ xuejipeng/alertmanager:v0.12.0         
+ xuejipeng/grafana:4.6.3          
+ xuejipeng/node-exporter:v0.15.2       
+ xuejipeng/prometheus:v2.0.0   
+ ```    
 一、请修改 inventories/hosts 中的内容，prometheus 为执行 kubectl 的节点，prometheus-data 为安装 prometheus 和 grafana并持久化数据的节点
 
 二、使用此 role 请确认需要修改以下几点
