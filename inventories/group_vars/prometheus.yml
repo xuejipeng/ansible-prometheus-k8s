@@ -3,5 +3,5 @@ prometheus:
   grafana_url: grafana.test.com
   namespace: monit
   repo: xuejipeng 
-  #  nodeselector: 10.0.1.231
+  nodeselector: HOST_NAME
   datadir: /apps/data
