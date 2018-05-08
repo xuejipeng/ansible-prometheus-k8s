@@ -1,0 +1,24 @@
+- hosts: prometheus-data
+  gather_facts: no
+  remote_user: "{{ adhoc_remote_user }}"
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: prometheus-privileges
+      file:
+       path: "{{ prometheus.datapath }}/prometheus"
+       state: directory
+       mode: 0777
+  tags:
+   - prometheus-privileges
+
+
+- hosts: "{{ adhoc_hosts }}"
+  gather_facts: no
+  remote_user: "{{ adhoc_remote_user }}"
+  become: yes
+  become_method: sudo
+  roles:
+    - prometheus
+  tags:
+    - prometheus

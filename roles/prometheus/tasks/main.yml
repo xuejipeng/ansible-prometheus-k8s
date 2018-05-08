@@ -1,0 +1,30 @@
+---
+- name: be sure works dir exist
+  file: 
+    path: "{{ runtime.workspace }}/prometheus/{{ item }}"
+    state: "directory"
+    recurse: "yes"
+  with_items:
+    - "prometheus"
+    - "grafana"
+    - "alertmanager"
+    - "kube-state-metrics"
+
+- name: be sure namespace exist
+  shell: kubectl create namespace {{ prometheus.namespace }} |echo {{ prometheus.namespace }} exist
+
+- include: prometheus.yml
+  tags:
+    - prometheus
+
+- include: alertmanager.yml
+  tags:
+    - alertmanager
+
+- include: kube-state-metrics.yml
+  tags:
+    - kube-state-metrics
+
+- include: grafana.yml
+  tags:
+    - grafana

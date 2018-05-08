@@ -1,0 +1,24 @@
+---
+- name: copy prometheus yaml
+  template: 
+    src: "prometheus/{{ item }}.j2"
+    dest: "{{ runtime.workspace }}/prometheus/prometheus/{{ item }}"
+  with_items:
+    - "ingress.yaml"
+    - "prometheus.yaml"
+    - "monit-namespace.yaml"
+    - "prometheus-rbac.yaml"
+    - "prometheus-configmap.yaml"
+    - "prometheus-node-exporter.yaml"
+
+- name: copy  prometheus rule yaml
+  copy:
+    src: "roles/prometheus/templates/prometheus/prometheus-rules.yaml"
+    dest: "{{ runtime.workspace }}/prometheus/prometheus/prometheus-rules.yaml"
+
+- name: apply prometheus-rbac
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/prometheus/prometheus-rbac.yaml -n {{ prometheus.namespace }}
+
+- name: install prometheus
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/prometheus/ -n {{ prometheus.namespace }}
+

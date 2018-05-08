@@ -1,0 +1,19 @@
+---
+- name: copy alertmanager yaml
+  template: 
+    src: "alertmanager/{{ item }}.j2"
+    dest: "{{ runtime.workspace }}/prometheus/alertmanager/{{ item }}"
+  with_items:
+    - "alertmanager.yaml"
+
+- name: copy alertmanager config yaml
+  copy:
+    src: "roles/prometheus/templates/alertmanager/{{ item }}"
+    dest: "{{ runtime.workspace }}/prometheus/alertmanager/{{ item }}"
+  with_items:
+    - "alertmanager-configmap.yaml"
+    - "alertmanager-templates.yaml"
+
+
+- name: install alertmanager
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/alertmanager/ -n {{ prometheus.namespace }}

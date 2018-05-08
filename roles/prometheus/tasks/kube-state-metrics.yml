@@ -1,0 +1,9 @@
+---
+- name: copy kube-state-metrics yaml
+  template: src=kube-state-metrics/{{ item }}.j2 dest={{ runtime.workspace }}/prometheus/kube-state-metrics/{{ item }}
+  with_items:
+    - "kube-state-metrics-rbac.yaml"
+    - "kube-state-metrics.yaml"
+    
+- name: install kube-state-metrics
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/kube-state-metrics/

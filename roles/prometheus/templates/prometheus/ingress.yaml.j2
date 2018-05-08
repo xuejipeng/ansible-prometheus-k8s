@@ -1,0 +1,14 @@
+ apiVersion: extensions/v1beta1
+ kind: Ingress
+ metadata:
+   name: grafana
+   namespace: {{ prometheus.namespace }}
+ spec:
+   rules:
+   - host: {{ prometheus.grafana_url }}
+     http:
+       paths:
+       - path: /
+         backend:
+          serviceName: grafana
+          servicePort: 3000

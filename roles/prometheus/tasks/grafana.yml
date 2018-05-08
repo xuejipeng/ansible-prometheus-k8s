@@ -1,0 +1,35 @@
+---
+- name: copy grafana yaml
+  template:
+    src: "grafana/{{ item }}.j2"
+    dest: "{{ runtime.workspace }}/prometheus/grafana/{{ item }}"
+  with_items:
+    - "grafana-import-dashboards.yaml"
+    - "grafana.yaml"
+
+- name: copy grafana config yaml
+  copy:
+    src: "roles/prometheus/templates/grafana/{{ item }}"
+    dest: "{{ runtime.workspace }}/prometheus/grafana/{{ item }}"
+  with_items:
+    - "grafana-import-dashboards-configmap.yaml"
+
+- name: install grafana
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/grafana/grafana.yaml -n {{ prometheus.namespace }}
+  tags: install_grafana
+
+- name: check grafana import job
+  shell: "kubectl get job -n {{ prometheus.namespace }}"
+  register: "job_state"
+  tags: import_dashboards
+
+- name: import dashboards configmap
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/grafana/grafana-import-dashboards-configmap.yaml -n {{ prometheus.namespace }}
+  when: job_state.stdout == ""
+  tags: import_dashboards
+
+- name: grafana import dashboards
+  shell: kubectl apply -f {{ runtime.workspace }}/prometheus/grafana/grafana-import-dashboards.yaml -n {{ prometheus.namespace }}
+  when: job_state.stdout == ""
+  tags: import_dashboards
+

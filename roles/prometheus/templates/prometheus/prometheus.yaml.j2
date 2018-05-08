@@ -1,0 +1,76 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus-core
+  namespace: {{ prometheus.namespace }}
+  labels:
+    app: prometheus
+    component: core
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: prometheus-main
+      labels:
+        app: prometheus
+        component: core
+    spec:
+      serviceAccountName: prometheus
+      nodeSelector: 
+{# kubernetes.io/hostname: {{ prometheus.nodeselector }} #}
+        kubernetes.io/hostname: {{ groups["prometheus-data"][0] }}
+      containers:
+      - name: prometheus
+        image: {{ prometheus.repo }}/prometheus:v2.0.0
+        args:
+          - '--storage.tsdb.retention=72h'
+          - '--storage.tsdb.path=/prometheus'
+          - '--config.file=/etc/prometheus/prometheus.yaml'
+        ports:
+        - name: webui
+          containerPort: 9090
+        resources:
+          requests:
+            cpu: 200m
+            memory: 2000M
+          limits:
+            cpu: 200m
+            memory: 2000M
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prometheus
+        - name: rules-volume
+          mountPath: /etc/prometheus-rules
+        - name: prometheus-data
+          mountPath: /prometheus
+      volumes:
+      - name: config-volume
+        configMap:
+          name: prometheus-core
+      - name: rules-volume
+        configMap:
+          name: prometheus-rules
+      - name: prometheus-data
+        hostPath: 
+          path: {{ prometheus.datadir }}/prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: {{ prometheus.namespace }}
+  labels:
+    app: prometheus
+    component: core
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  type: NodePort
+  ports:
+    - port: 9090
+      protocol: TCP
+      name: webui
+  selector:
+    app: prometheus
+    component: core
+

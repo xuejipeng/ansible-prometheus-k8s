@@ -1,0 +1,5 @@
+[prometheus]
+k8s-master
+
+[prometheus-data]
+prometheus-node
