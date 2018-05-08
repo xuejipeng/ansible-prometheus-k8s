@@ -1,7 +1,7 @@
 # ansible-prometheus-k8s
 k8s 部署 prometheus ansible 脚本
 
-一、请修改 inventories/hosts 中的内容,prometheus 为执行 kubectl 的节点,prometheus-data 为安装 prometheus 和 grafana并持久化数据的节点
+一、请修改 inventories/hosts 中的内容，prometheus 为执行 kubectl 的节点，prometheus-data 为安装 prometheus 和 grafana并持久化数据的节点
 
 二、使用此 role 请确认需要修改以下几点
 
