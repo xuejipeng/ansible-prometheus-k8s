@@ -1,6 +1,7 @@
 # ansible-prometheus-k8s
-k8s 部署 prometheus ansible 脚本
+k8s 部署 prometheus ansible 脚本，
 使用次脚本的前提是您已经部署好 k8s 环境和 ingress，并且可访问外网，如不可访问外网可以提前下载好 image，并修改inventories/group_vars/prometheus.yml 中的repo 本地化安装
+
  镜像名称：
  
  ```
