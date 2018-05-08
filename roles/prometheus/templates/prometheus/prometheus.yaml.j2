@@ -17,8 +17,7 @@ spec:
     spec:
       serviceAccountName: prometheus
       nodeSelector: 
-{# kubernetes.io/hostname: {{ prometheus.nodeselector }} #}
-        kubernetes.io/hostname: {{ groups["prometheus-data"][0] }}
+        kubernetes.io/hostname: {{ prometheus.nodeselector }}
       containers:
       - name: prometheus
         image: {{ prometheus.repo }}/prometheus:v2.0.0

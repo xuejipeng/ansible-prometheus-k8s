@@ -15,8 +15,7 @@ spec:
         component: core
     spec:
       nodeSelector:
-{# kubernetes.io/hostname: {{ prometheus.nodeselector }} #}
-        kubernetes.io/hostname: {{ groups["prometheus-data"][0] }}
+        kubernetes.io/hostname: {{ prometheus.nodeselector }}
       containers:
       - image: {{ prometheus.repo }}/grafana:4.6.3
         name: grafana-core
