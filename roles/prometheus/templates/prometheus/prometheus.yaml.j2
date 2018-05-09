@@ -20,7 +20,7 @@ spec:
         kubernetes.io/hostname: {{ prometheus.nodeselector }}
       containers:
       - name: prometheus
-        image: {{ prometheus.repo }}/prometheus:v2.0.0
+        image: {{ prometheus.repo }}/{{ prometheus.version }}
         args:
           - '--storage.tsdb.retention=72h'
           - '--storage.tsdb.path=/prometheus'

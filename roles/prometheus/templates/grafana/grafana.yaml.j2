@@ -17,7 +17,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: {{ prometheus.nodeselector }}
       containers:
-      - image: {{ prometheus.repo }}/grafana:4.6.3
+      - image: {{ prometheus.repo }}/{{ grafana.version }}
         name: grafana-core
         imagePullPolicy: IfNotPresent
         # env:

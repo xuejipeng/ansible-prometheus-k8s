@@ -5,7 +5,7 @@
    namespace: {{ prometheus.namespace }}
  spec:
    rules:
-   - host: {{ prometheus.grafana_url }}
+   - host: {{ grafana.grafana_url }}
      http:
        paths:
        - path: /
