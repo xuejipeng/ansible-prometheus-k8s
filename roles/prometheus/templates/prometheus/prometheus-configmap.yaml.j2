@@ -3,12 +3,13 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: prometheus-core
+  namespace: monit
 data:
   prometheus.yaml: |
     global:
       scrape_interval: 30s
       scrape_timeout: 10s
-      evaluation_interval: 10s
+      evaluation_interval: 1m
     rule_files:
       - "/etc/prometheus-rules/alert-rules.yaml"
     alerting:
@@ -17,9 +18,26 @@ data:
           - targets:
             - "alertmanager:9093"
     scrape_configs:
+      - job_name: kubernetes-schedule
+        honor_labels: true
+        static_configs:
+         - targets: ['10.0.1.215:10251']
 
+      - job_name: 'kube-controller-manager'
+        honor_labels: true
+        static_configs:
+         - targets: ['10.0.1.215:10252']
+
+      - job_name: 'etcd'
+        honor_labels: true
+        static_configs:
+         - targets: ['10.0.1.215:2379']
+        scheme: 'https'
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       # https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml#L37
-      - job_name: 'kubernetes-nodes'
+      - job_name: 'kubernetes-kubelet'
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -29,6 +47,18 @@ data:
           - source_labels: [__address__]
             regex: '(.*):10250'
             replacement: '${1}:10255'
+            target_label: __address__
+
+      - job_name: 'kubernetes-kube-proxy'
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - source_labels: [__address__]
+            regex: '(.*):10250'
+            replacement: '${1}:10249'
             target_label: __address__
 
       # https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml#L79
@@ -125,3 +155,16 @@ data:
             regex: '(.*):10250'
             replacement: '${1}:4194'
             target_label: __address__
+
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+        - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: default;kubernetes;https

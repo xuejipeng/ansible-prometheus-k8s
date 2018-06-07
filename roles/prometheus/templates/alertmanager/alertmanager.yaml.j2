@@ -15,6 +15,18 @@ spec:
         app: alertmanager
     spec:
       containers:
+      - name: alertmanager-dingding
+        image: {{ prometheus.repo }}/{{ alertmanager_dingding.version }}
+        args:
+          - '--ding.profile=webhook1={{ alertmanager_dingding.token }}'
+          - '--log.level=debug'
+          - '--template.file=/etc/alertmanager-templates/dingding.tmpl'
+        volumeMounts:
+        - name: dingding-templates-volume
+          mountPath: /etc/alertmanager-templates
+        ports:
+        - name: dingding
+          containerPort: 8060
       - name: alertmanager
        # image: quay.io/prometheus/alertmanager:v0.12.0
         image: {{ prometheus.repo }}/{{ alertmanager.version }}
@@ -40,6 +52,9 @@ spec:
           name: alertmanager-templates
       - name: alertmanager
         emptyDir: {}
+      - name: dingding-templates-volume
+        configMap:
+          name: dingding-templates
 ---
 apiVersion: v1
 kind: Service

@@ -23,6 +23,8 @@ k8s 部署 prometheus ansible 脚本，
    kubectl get node --show-labels
 
    请修改 inventories/group_vars/prometheus.yml 中的 nodeselector 变量为 kubernetes.io/hostname 的值，此节点为部署 prometheus 的节点
+3. 确认 hosts 文件内 prometheus 组下为 k8s-master 机器,prometheus-data 为 prometheus 存放数据的机器。
+4. inventories/group_vars/prometheus.yml 中加入钉钉报警的 token
 
 三、执行：ansible-playbook -i inventories/hosts site.yml --extra-vars '{"adhoc_hosts":"prometheus","adhoc_remote_user":"[YOUR_USER_NAME]","adhoc_become_user":"root"}'
 

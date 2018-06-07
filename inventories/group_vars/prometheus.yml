@@ -16,5 +16,9 @@ kube_state_metrics:
 alertmanager:
   version: alertmanager:v0.12.0
 
+alertmanager_dingding:
+  version: prometheus-webhook-dingtalk:v0.3.0
+  token: 
+
 node_exporter:
   version: node-exporter:v0.15.2

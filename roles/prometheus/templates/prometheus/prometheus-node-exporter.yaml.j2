@@ -7,6 +7,8 @@ metadata:
     app: prometheus
     component: node-exporter
 spec:
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       name: prometheus-node-exporter
@@ -15,7 +17,7 @@ spec:
         component: node-exporter
     spec:
       containers:
-      - image: {{ prometheus.repo }}/node-exporter:v0.15.2
+      - image: {{ prometheus.repo }}/{{ node_exporter.version }}
         name: prometheus-node-exporter
         ports:
         - name: prom-node-exp

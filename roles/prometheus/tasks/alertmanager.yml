@@ -13,6 +13,7 @@
   with_items:
     - "alertmanager-configmap.yaml"
     - "alertmanager-templates.yaml"
+    - "dingding-templates.yaml"
 
 
 - name: install alertmanager

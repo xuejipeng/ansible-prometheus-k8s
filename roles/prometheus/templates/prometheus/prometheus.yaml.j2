@@ -18,6 +18,7 @@ spec:
       serviceAccountName: prometheus
       nodeSelector: 
         kubernetes.io/hostname: {{ prometheus.nodeselector }}
+{# kubernetes.io/hostname: {{ groups["prometheus-data"][0] }} #}
       containers:
       - name: prometheus
         image: {{ prometheus.repo }}/{{ prometheus.version }}
@@ -25,15 +26,16 @@ spec:
           - '--storage.tsdb.retention=72h'
           - '--storage.tsdb.path=/prometheus'
           - '--config.file=/etc/prometheus/prometheus.yaml'
+          - '--web.enable-lifecycle'
         ports:
         - name: webui
           containerPort: 9090
         resources:
           requests:
-            cpu: 200m
-            memory: 2000M
+            cpu: 250m
+            memory: 512M
           limits:
-            cpu: 200m
+            cpu: 500m
             memory: 2000M
         volumeMounts:
         - name: config-volume

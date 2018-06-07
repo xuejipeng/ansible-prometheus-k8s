@@ -6,14 +6,17 @@
   tasks:
     - name: prometheus-privileges
       file:
-       path: "{{ prometheus.datapath }}/prometheus"
+       path: "{{ prometheus.datapath }}/{{ item }}"
        state: directory
        mode: 0777
+      with_items:
+        - "prometheus"
+        - "grafana"
   tags:
-   - prometheus-privileges
+   - prometheus
 
 
-- hosts: "{{ adhoc_hosts }}"
+- hosts: prometheus
   gather_facts: no
   remote_user: "{{ adhoc_remote_user }}"
   become: yes
