@@ -7,9 +7,9 @@ data:
     global:
       resolve_timeout: 2m
       smtp_smarthost: 'smtp.qiye.163.com:587'
-      smtp_from: 'prometheus@growingio.com'
-      smtp_auth_username: 'noreply@growingio.com'
-      smtp_auth_password: 'gGEP4JhfC2y68xnQ'
+      smtp_from: ''
+      smtp_auth_username: ''
+      smtp_auth_password: ''
       smtp_require_tls: true
     templates:
     - '/etc/alertmanager-templates/*.tmpl'
